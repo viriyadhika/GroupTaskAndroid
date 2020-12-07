@@ -4,10 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,8 +16,8 @@ import com.android.volley.VolleyError;
 import com.example.grouptaskandroid.fragments.GroupFragment;
 import com.example.grouptaskandroid.fragments.GroupViewModel;
 import com.example.grouptaskandroid.fragments.MainViewModel;
+import com.example.grouptaskandroid.fragments.TaskFragment;
 import com.example.grouptaskandroid.login.LoginActivity;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel mainViewModel;
     private GroupViewModel groupViewModel;
     private Button logoutButton;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,21 +57,9 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.main_groupFragment, GroupFragment.class, null)
+                    .add(R.id.main_groupFragment, TaskFragment.class, null)
                     .commit();
         }
-
-        toolbar = findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-
-//        CollapsingToolbarLayout layout = findViewById(R.id.collapsing_toolbar_layout);
-//        toolbar = findViewById(R.id.main_toolbar);
-//        NavHostFragment navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment);
-//        NavController navController = navHostFragment.getNavController();
-//        AppBarConfiguration appBarConfiguration =
-//                new AppBarConfiguration.Builder(navController.getGraph()).build();
-//        NavigationUI.setupWithNavController(layout, toolbar, navController, appBarConfiguration);
-
 
         logoutButton = findViewById(R.id.main_logout);
         logoutButton.setOnClickListener(new View.OnClickListener() {
