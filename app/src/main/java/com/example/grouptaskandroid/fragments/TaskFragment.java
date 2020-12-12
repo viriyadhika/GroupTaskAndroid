@@ -2,9 +2,17 @@ package com.example.grouptaskandroid.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +26,7 @@ import com.example.grouptaskandroid.adapter.GroupRecycleViewAdapter;
 import com.example.grouptaskandroid.adapter.TaskRecycleViewAdapter;
 import com.example.grouptaskandroid.model.GroupSummary;
 import com.example.grouptaskandroid.model.Task;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import java.util.List;
 
@@ -80,6 +89,12 @@ public class TaskFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_task, container, false);
 
+
+        taskRecycleViewAdapter = new TaskRecycleViewAdapter();
+
+        recyclerView = v.findViewById(R.id.task_recyclerView);
+        recyclerView.setAdapter(taskRecycleViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         taskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
         taskViewModel.getTask().observe(getActivity(), new Observer<List<Task>>() {
             @Override
@@ -95,11 +110,7 @@ public class TaskFragment extends Fragment {
 //            }
 //        });
 
-        taskRecycleViewAdapter = new TaskRecycleViewAdapter();
 
-        recyclerView = v.findViewById(R.id.task_recyclerView);
-        recyclerView.setAdapter(taskRecycleViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return v;
     }

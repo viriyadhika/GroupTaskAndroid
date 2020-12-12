@@ -2,9 +2,16 @@ package com.example.grouptaskandroid.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,15 +71,6 @@ public class GroupFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_group, container, false);
 
-        // Initiate all the view component
-        groupViewModel = new ViewModelProvider(requireActivity()).get(GroupViewModel.class);
-        groupViewModel.getMyGroups().observe(getActivity(), new Observer<List<GroupSummary>>() {
-            @Override
-            public void onChanged(List<GroupSummary> myGroups) {
-                Log.d(TAG, "onChanged: " + myGroups);
-                recycleViewAdapter.setMyGroups(myGroups);
-            }
-        });
 
         recycleViewAdapter = new GroupRecycleViewAdapter(new GroupRecycleViewAdapter.GroupRecycleViewListener() {
             @Override
@@ -83,6 +81,17 @@ public class GroupFragment extends Fragment {
         recyclerView = v.findViewById(R.id.group_recyclerView);
         recyclerView.setAdapter(recycleViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // Initiate all the view component
+        groupViewModel = new ViewModelProvider(requireActivity()).get(GroupViewModel.class);
+        groupViewModel.getMyGroups().observe(getActivity(), new Observer<List<GroupSummary>>() {
+            @Override
+            public void onChanged(List<GroupSummary> myGroups) {
+                Log.d(TAG, "onChanged: " + myGroups);
+                recycleViewAdapter.setMyGroups(myGroups);
+            }
+        });
+
+
 
         return v;
     }

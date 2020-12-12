@@ -5,22 +5,17 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/groupFragment">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
 
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph" />
     <fragment
         android:id="@+id/groupFragment"
         android:name="com.example.grouptaskandroid.fragments.GroupFragment"
-        android:label="fragment_group"
+        android:label="My Groups"
         tools:layout="@layout/fragment_group" />
+
+    <fragment
+        android:id="@+id/taskFragment"
+        android:name="com.example.grouptaskandroid.fragments.TaskFragment"
+        android:label="My Task"
+        tools:layout="@layout/fragment_task" />
 
 </navigation>
