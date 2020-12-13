@@ -22,11 +22,15 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Task>> getTask() {
-        return myTaskRepository.getTasks();
+        return myTaskRepository.getData();
     }
 
-    public MutableLiveData<VolleyError> getError() {
+    public MutableLiveData<Exception> getError() {
         return myTaskRepository.getErrorState();
+    }
+
+    public void refreshData() {
+        myTaskRepository.refreshData();
     }
 
 }

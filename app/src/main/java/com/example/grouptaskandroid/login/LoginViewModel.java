@@ -7,11 +7,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.grouptaskandroid.exception.RequiredFieldEmptyException;
-import com.example.grouptaskandroid.util.AuthenticationManager;
+import com.example.grouptaskandroid.util.AuthenticationManagerSingleton;
 
 public class LoginViewModel extends AndroidViewModel {
 
-    private AuthenticationManager authenticationManager = new AuthenticationManager(getApplication());
+    private AuthenticationManagerSingleton authenticationManagerSingleton = AuthenticationManagerSingleton.getInstance(getApplication());
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
@@ -21,15 +21,15 @@ public class LoginViewModel extends AndroidViewModel {
         if (username.equals("") || password.equals("")) {
             throw new RequiredFieldEmptyException();
         }
-        authenticationManager.login(username, password);
+        authenticationManagerSingleton.login(username, password);
     }
 
     public MutableLiveData<Boolean> getIsLoggedIn() {
-        return authenticationManager.getIsLoggedIn();
+        return authenticationManagerSingleton.getIsLoggedIn();
     }
 
     public MutableLiveData<Exception> getExceptionState() {
-        return authenticationManager.getExceptionState();
+        return authenticationManagerSingleton.getExceptionState();
     }
 
 }

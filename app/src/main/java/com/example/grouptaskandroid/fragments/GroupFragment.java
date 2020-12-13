@@ -86,13 +86,15 @@ public class GroupFragment extends Fragment {
         groupViewModel.getMyGroups().observe(getActivity(), new Observer<List<GroupSummary>>() {
             @Override
             public void onChanged(List<GroupSummary> myGroups) {
-                Log.d(TAG, "onChanged: " + myGroups);
                 recycleViewAdapter.setMyGroups(myGroups);
             }
         });
-
-
-
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        groupViewModel.refreshData();
+        super.onResume();
     }
 }

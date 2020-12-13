@@ -5,19 +5,19 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.example.grouptaskandroid.util.AuthenticationManager;
+import com.example.grouptaskandroid.util.AuthenticationManagerSingleton;
 
 public class MainViewModel extends AndroidViewModel {
 
-    private AuthenticationManager authenticationManager;
+    private AuthenticationManagerSingleton authenticationManagerSingleton;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-        authenticationManager = new AuthenticationManager(application);
+        authenticationManagerSingleton = AuthenticationManagerSingleton.getInstance(application);
     }
 
     public void logout() {
-        authenticationManager.handleLogOut();
+        authenticationManagerSingleton.handleLogOut();
     }
 
 }

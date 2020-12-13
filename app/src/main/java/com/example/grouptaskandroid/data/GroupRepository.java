@@ -1,12 +1,14 @@
 package com.example.grouptaskandroid.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.GroupSummary;
 import com.example.grouptaskandroid.model.Task;
 import com.example.grouptaskandroid.util.Constants;
@@ -19,45 +21,57 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MyTaskRepository extends GenericRepository<List<Task>>{
+public class GroupRepository extends GenericRepository<Group> {
 
-    public static final String TAG = "MyTaskRepository";
+    private static final String TAG = "GroupRepository";
+    private int groupId;
 
-    public MyTaskRepository(Context context) {
+    public GroupRepository(Context context, int groupId) {
         super(context);
+        this.groupId = groupId;
         refreshData();
     }
 
     @Override
+    public void refreshData() {
+        if (authenticationManagerSingleton.getIsLoggedIn().getValue()) {
+            retrieveData(false);
+        }
+    }
+
+    @Override
     public void retrieveData(final boolean isRetry) {
-        String tokenUrl = Constants.url + "/users/" + authenticationManagerSingleton.getUserId() + "/tasks";
+        String url = Constants.url + "/groups/" + groupId;
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
-                tokenUrl,
+                url,
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONArray myTasks = response.getJSONArray("my_tasks");
+                            int pk = response.getInt("pk");
+                            String groupName = response.getString("name");
+                            JSONArray tasks = response.getJSONArray("group_tasks");
                             List<Task> taskList = new ArrayList<>();
-                            for (int i = 0; i < myTasks.length(); i++) {
-                                JSONObject task = myTasks.getJSONObject(i);
-                                JSONObject taskGroupJSON = task.getJSONObject("group");
-                                GroupSummary taskGroup = new GroupSummary(
-                                        taskGroupJSON.getInt("pk"),
-                                        taskGroupJSON.getString("name")
+                            for (int i = 0; i < tasks.length(); i++) {
+                                JSONObject task = tasks.getJSONObject(i);
+                                JSONObject taskGroup = task.getJSONObject("group");
+                                GroupSummary groupSummary = new GroupSummary(
+                                        taskGroup.getInt("pk"),
+                                        taskGroup.getString("name")
                                 );
                                 taskList.add(
                                         new Task(
                                                 task.getInt("pk"),
                                                 task.getString("name"),
                                                 task.getString("desc"),
-                                                taskGroup
+                                                groupSummary
                                         )
                                 );
                             }
-                            data.setValue(taskList);
+                            data.setValue(new Group(pk, groupName, taskList));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -65,24 +79,17 @@ public class MyTaskRepository extends GenericRepository<List<Task>>{
                 },
                 new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(final VolleyError error) {
+                    public void onErrorResponse(VolleyError error) {
                         handleError(TAG, error, isRetry);
                     }
                 }
-        ) {
+        ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return authenticationManagerSingleton.getCredential();
             }
         };
-        requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
-    }
 
-    @Override
-    public void refreshData() {
-        data.setValue(new ArrayList<Task>());
-        if (authenticationManagerSingleton.getIsLoggedIn().getValue()) {
-            retrieveData(false);
-        }
+        requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
 }

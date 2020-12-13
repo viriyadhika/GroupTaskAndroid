@@ -19,11 +19,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthenticationManager {
+public class AuthenticationManagerSingleton {
 
-    public static final String TAG = "util.AuthenticationManager";
+    public static final String TAG = "util.AuthenticationManagerSingleton";
     private static final String REFRESH = "refresh";
     private static final String ACCESS = "access";
+
+    private static AuthenticationManagerSingleton instance;
 
     private Context context;
 
@@ -35,10 +37,17 @@ public class AuthenticationManager {
     private MutableLiveData<Boolean> isLoggedIn = new MutableLiveData<>(false);
     private MutableLiveData<Exception> exceptionState = new MutableLiveData<>();
 
-    public AuthenticationManager(Context context) {
+    private AuthenticationManagerSingleton(Context context) {
         this.context = context;
         preferences = context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         updateAuthState();
+    }
+
+    public static synchronized AuthenticationManagerSingleton getInstance(Context ctx) {
+        if (instance == null) {
+            instance = new AuthenticationManagerSingleton(ctx);
+        }
+        return instance;
     }
 
     // Get the four auth states

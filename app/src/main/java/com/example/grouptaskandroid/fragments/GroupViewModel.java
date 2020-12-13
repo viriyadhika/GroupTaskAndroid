@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.volley.VolleyError;
 import com.example.grouptaskandroid.data.MyGroupRepository;
 import com.example.grouptaskandroid.model.GroupSummary;
 
@@ -24,10 +23,10 @@ public class GroupViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<GroupSummary>> getMyGroups() {
-        return myGroupRepository.getGroups();
+        return myGroupRepository.getData();
     }
 
-    public MutableLiveData<VolleyError> getError() {
+    public MutableLiveData<Exception> getError() {
         return myGroupRepository.getErrorState();
     }
 
@@ -38,4 +37,9 @@ public class GroupViewModel extends AndroidViewModel {
     public void setSelectedGroupPk(int pk) {
         selectedGroupPk.setValue(pk);
     }
+
+    public void refreshData() {
+        myGroupRepository.refreshData();
+    }
+
 }

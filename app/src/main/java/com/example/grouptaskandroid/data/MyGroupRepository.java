@@ -1,9 +1,6 @@
 package com.example.grouptaskandroid.data;
 
 import android.content.Context;
-import android.util.Log;
-
-import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -11,49 +8,28 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.grouptaskandroid.model.GroupSummary;
-import com.example.grouptaskandroid.util.AuthenticationManager;
 import com.example.grouptaskandroid.util.Constants;
-import com.example.grouptaskandroid.util.RequestQueueSingleton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MyGroupRepository {
-    private Context context;
+public class MyGroupRepository extends GenericRepository<List<GroupSummary>>{
+
     public static final String TAG = "MyGroupRepository";
 
-    private AuthenticationManager authenticationManager;
-    private RequestQueueSingleton requestQueueSingleton;
-
-    private MutableLiveData<List<GroupSummary>> groups = new MutableLiveData<>();
-
-    private MutableLiveData<VolleyError> errorState = new MutableLiveData<>();
-
     public MyGroupRepository(Context context) {
-        this.context = context;
-
-        authenticationManager = new AuthenticationManager(context);
-        requestQueueSingleton = RequestQueueSingleton.getInstance(context);
-        if (authenticationManager.getIsLoggedIn().getValue()) {
-            retrieveGroupData(false);
-        }
+        super(context);
+        refreshData();
     }
 
-    public MutableLiveData<List<GroupSummary>> getGroups() {
-        return groups;
-    }
-
-    public MutableLiveData<VolleyError> getErrorState() { return errorState; }
-
-    private void retrieveGroupData(final boolean isRetry) {
-
-        String tokenUrl = Constants.url + "/users/" + authenticationManager.getUserId() + "/groups";
+    @Override
+    public void retrieveData(final boolean isRetry) {
+        String tokenUrl = Constants.url + "/users/" + authenticationManagerSingleton.getUserId() + "/groups";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 tokenUrl,
@@ -73,7 +49,7 @@ public class MyGroupRepository {
                                         )
                                 );
                             }
-                            groups.setValue(groupList);
+                            data.setValue(groupList);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -82,33 +58,23 @@ public class MyGroupRepository {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(final VolleyError error) {
-                        Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data, StandardCharsets.UTF_8));
-                        if (error.networkResponse.statusCode == 401) {
-                            authenticationManager.refreshToken(
-                                    new AuthenticationManager.RefreshCallback() {
-                                        @Override
-                                        public void refreshSuccessCallBack() {
-                                            if (!isRetry) {
-                                                retrieveGroupData(true);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void refreshFailCallBack() {
-                                            errorState.setValue(error);
-                                        }
-                                    }
-                            );
-                        }
+                        handleError(TAG, error, isRetry);
                     }
                 }
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                return authenticationManager.getCredential();
+                return authenticationManagerSingleton.getCredential();
             }
         };
         requestQueueSingleton.addToRequestQueue(jsonObjectRequest);
     }
 
+    @Override
+    public void refreshData() {
+        data.setValue(new ArrayList<GroupSummary>());
+        if (authenticationManagerSingleton.getIsLoggedIn().getValue()) {
+            retrieveData(false);
+        }
+    }
 }

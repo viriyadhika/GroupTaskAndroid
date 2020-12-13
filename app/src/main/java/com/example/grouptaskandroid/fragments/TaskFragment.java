@@ -114,4 +114,10 @@ public class TaskFragment extends Fragment {
 
         return v;
     }
+
+    @Override
+    public void onResume() {
+        taskViewModel.refreshData();
+        super.onResume();
+    }
 }
