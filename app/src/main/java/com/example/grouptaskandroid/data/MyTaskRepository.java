@@ -7,8 +7,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.grouptaskandroid.model.GroupSummary;
+import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.Task;
+import com.example.grouptaskandroid.model.User;
 import com.example.grouptaskandroid.util.Constants;
 
 import org.json.JSONArray;
@@ -42,20 +43,28 @@ public class MyTaskRepository extends GenericRepository<List<Task>>{
                             JSONArray myTasks = response.getJSONArray("my_tasks");
                             List<Task> taskList = new ArrayList<>();
                             for (int i = 0; i < myTasks.length(); i++) {
-                                JSONObject task = myTasks.getJSONObject(i);
-                                JSONObject taskGroupJSON = task.getJSONObject("group");
-                                GroupSummary taskGroup = new GroupSummary(
+                                JSONObject taskJSON = myTasks.getJSONObject(i);
+                                JSONObject taskGroupJSON = taskJSON.getJSONObject("group");
+                                Group taskGroup = new Group(
                                         taskGroupJSON.getInt("pk"),
                                         taskGroupJSON.getString("name")
                                 );
-                                taskList.add(
-                                        new Task(
-                                                task.getInt("pk"),
-                                                task.getString("name"),
-                                                task.getString("desc"),
-                                                taskGroup
-                                        )
+                                JSONObject inCharge = taskJSON.getJSONObject("in_charge");
+                                User userInCharge = new User(
+                                        inCharge.getInt("pk"),
+                                        inCharge.getString("username"),
+                                        inCharge.getString("email")
                                 );
+                                Task task = new Task(
+                                        taskJSON.getInt("pk"),
+                                        taskJSON.getString("name"),
+                                        taskJSON.getString("desc"),
+                                        taskGroup,
+                                        userInCharge,
+                                        taskJSON.getString("due_date"),
+                                        taskJSON.getBoolean("is_done")
+                                );
+                                taskList.add(task);
                             }
                             data.setValue(taskList);
                         } catch (JSONException e) {

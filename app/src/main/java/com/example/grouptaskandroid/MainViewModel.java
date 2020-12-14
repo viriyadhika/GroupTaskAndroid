@@ -1,4 +1,4 @@
-package com.example.grouptaskandroid.fragments;
+package com.example.grouptaskandroid;
 
 import android.app.Application;
 

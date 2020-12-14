@@ -5,26 +5,13 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.grouptaskandroid.exception.AuthenticationFailedException;
 import com.example.grouptaskandroid.exception.NoNetworkResponseException;
-import com.example.grouptaskandroid.model.GroupSummary;
 import com.example.grouptaskandroid.util.AuthenticationManagerSingleton;
-import com.example.grouptaskandroid.util.Constants;
 import com.example.grouptaskandroid.util.RequestQueueSingleton;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public abstract class GenericRepository<T> implements IGenericRepository{
     protected Context context;

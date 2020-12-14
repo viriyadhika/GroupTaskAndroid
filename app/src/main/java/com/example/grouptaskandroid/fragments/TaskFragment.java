@@ -2,31 +2,19 @@ package com.example.grouptaskandroid.fragments;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.grouptaskandroid.R;
-import com.example.grouptaskandroid.adapter.GroupRecycleViewAdapter;
 import com.example.grouptaskandroid.adapter.TaskRecycleViewAdapter;
-import com.example.grouptaskandroid.model.GroupSummary;
 import com.example.grouptaskandroid.model.Task;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import java.util.List;
 
@@ -102,15 +90,6 @@ public class TaskFragment extends Fragment {
                 taskRecycleViewAdapter.setTaskList(tasks);
             }
         });
-
-//        taskRecycleViewAdapter = new TaskRecycleViewAdapter(new GroupRecycleViewAdapter.GroupRecycleViewListener() {
-//            @Override
-//            public void getGroupDetail(int pk) {
-//                groupViewModel.setSelectedGroupPk(pk);
-//            }
-//        });
-
-
 
         return v;
     }

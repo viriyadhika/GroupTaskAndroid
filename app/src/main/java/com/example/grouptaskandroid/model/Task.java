@@ -4,13 +4,25 @@ public class Task {
     private int pk;
     private String name;
     private String desc;
-    private GroupSummary groupSummary;
+    private Group group;
+    private User inCharge;
+    private String dueDate;
+    private boolean isDone;
 
-    public Task(int pk, String name, String desc, GroupSummary groupSummary) {
+    public Task(int pk,
+                String name,
+                String desc,
+                Group group,
+                User user,
+                String dueDate,
+                boolean isDone) {
         this.pk = pk;
         this.name = name;
         this.desc = desc;
-        this.groupSummary = groupSummary;
+        this.group = group;
+        this.inCharge = user;
+        this.dueDate = dueDate;
+        this.isDone = isDone;
     }
 
     public int getPk() {
@@ -25,8 +37,8 @@ public class Task {
         return desc;
     }
 
-    public GroupSummary getGroupSummary() {
-        return groupSummary;
+    public Group getGroup() {
+        return group;
     }
 
     @Override
@@ -35,7 +47,10 @@ public class Task {
                 "pk=" + pk +
                 ", name='" + name + '\'' +
                 ", desc='" + desc + '\'' +
-                ", groupSummary=" + groupSummary +
+                ", group=" + group +
+                ", inCharge=" + inCharge +
+                ", dueDate='" + dueDate + '\'' +
+                ", isDone=" + isDone +
                 '}';
     }
 }

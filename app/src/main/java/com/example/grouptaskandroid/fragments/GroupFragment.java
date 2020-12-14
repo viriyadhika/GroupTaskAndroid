@@ -2,28 +2,19 @@ package com.example.grouptaskandroid.fragments;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.VolleyError;
 import com.example.grouptaskandroid.R;
 import com.example.grouptaskandroid.adapter.GroupRecycleViewAdapter;
-import com.example.grouptaskandroid.model.GroupSummary;
+import com.example.grouptaskandroid.model.Group;
 
 import java.util.List;
 
@@ -83,9 +74,9 @@ public class GroupFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         // Initiate all the view component
         groupViewModel = new ViewModelProvider(requireActivity()).get(GroupViewModel.class);
-        groupViewModel.getMyGroups().observe(getActivity(), new Observer<List<GroupSummary>>() {
+        groupViewModel.getMyGroups().observe(getActivity(), new Observer<List<Group>>() {
             @Override
-            public void onChanged(List<GroupSummary> myGroups) {
+            public void onChanged(List<Group> myGroups) {
                 recycleViewAdapter.setMyGroups(myGroups);
             }
         });

@@ -1,7 +1,6 @@
 package com.example.grouptaskandroid.data;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -9,8 +8,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.grouptaskandroid.model.Group;
-import com.example.grouptaskandroid.model.GroupSummary;
+import com.example.grouptaskandroid.model.GroupDetail;
 import com.example.grouptaskandroid.model.Task;
+import com.example.grouptaskandroid.model.User;
 import com.example.grouptaskandroid.util.Constants;
 
 import org.json.JSONArray;
@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GroupRepository extends GenericRepository<Group> {
+public class GroupDetailRepository extends GenericRepository<GroupDetail> {
 
-    private static final String TAG = "GroupRepository";
+    private static final String TAG = "GroupDetailRepository";
     private int groupId;
 
-    public GroupRepository(Context context, int groupId) {
+    public GroupDetailRepository(Context context, int groupId) {
         super(context);
         this.groupId = groupId;
         refreshData();
@@ -57,21 +57,42 @@ public class GroupRepository extends GenericRepository<Group> {
                             List<Task> taskList = new ArrayList<>();
                             for (int i = 0; i < tasks.length(); i++) {
                                 JSONObject task = tasks.getJSONObject(i);
-                                JSONObject taskGroup = task.getJSONObject("group");
-                                GroupSummary groupSummary = new GroupSummary(
-                                        taskGroup.getInt("pk"),
-                                        taskGroup.getString("name")
+                                JSONObject taskGroupJSON = task.getJSONObject("group");
+                                Group taskGroup = new Group(
+                                        taskGroupJSON.getInt("pk"),
+                                        taskGroupJSON.getString("name")
+                                );
+                                JSONObject inCharge = task.getJSONObject("in_charge");
+                                User userInCharge = new User(
+                                        inCharge.getInt("pk"),
+                                        inCharge.getString("username"),
+                                        inCharge.getString("email")
                                 );
                                 taskList.add(
                                         new Task(
                                                 task.getInt("pk"),
                                                 task.getString("name"),
                                                 task.getString("desc"),
-                                                groupSummary
+                                                taskGroup,
+                                                userInCharge,
+                                                task.getString("due_date"),
+                                                task.getBoolean("is_done")
                                         )
                                 );
                             }
-                            data.setValue(new Group(pk, groupName, taskList));
+                            JSONArray members = response.getJSONArray("members");
+                            List<User> memberList = new ArrayList<>();
+                            for (int i = 0; i < members.length(); i++) {
+                                JSONObject memberJSON = members.getJSONObject(i);
+                                User member = new User(
+                                        memberJSON.getInt("pk"),
+                                        memberJSON.getString("username"),
+                                        memberJSON.getString("email")
+                                );
+                                memberList.add(member);
+                            }
+
+                            data.setValue(new GroupDetail(pk, groupName, taskList, memberList));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

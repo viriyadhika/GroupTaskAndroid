@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.grouptaskandroid.data.MyGroupRepository;
-import com.example.grouptaskandroid.model.GroupSummary;
+import com.example.grouptaskandroid.model.Group;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class GroupViewModel extends AndroidViewModel {
         myGroupRepository = new MyGroupRepository(application);
     }
 
-    public MutableLiveData<List<GroupSummary>> getMyGroups() {
+    public MutableLiveData<List<Group>> getMyGroups() {
         return myGroupRepository.getData();
     }
 

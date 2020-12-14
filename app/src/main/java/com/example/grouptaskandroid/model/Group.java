@@ -1,17 +1,20 @@
 package com.example.grouptaskandroid.model;
 
-import java.util.List;
-
 public class Group {
-    int pk;
-    String name;
-    List<Task> task;
-    List<User> members;
+    public int pk;
+    public String name;
 
-    public Group(int pk, String name, List<Task> task) {
+    public Group(int pk, String name) {
         this.pk = pk;
         this.name = name;
-        this.task = task;
+    }
+
+    public int getPk() {
+        return pk;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -19,8 +22,6 @@ public class Group {
         return "Group{" +
                 "pk=" + pk +
                 ", name='" + name + '\'' +
-                ", task=" + task +
-                ", members=" + members +
                 '}';
     }
 }

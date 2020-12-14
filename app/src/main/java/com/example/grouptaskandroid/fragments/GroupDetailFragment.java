@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.grouptaskandroid.R;
-import com.example.grouptaskandroid.model.Group;
+import com.example.grouptaskandroid.model.GroupDetail;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,10 +73,10 @@ public class GroupDetailFragment extends Fragment {
         int groupId = GroupDetailFragmentArgs.fromBundle(getArguments()).getGroupId();
         groupViewModel.setGroupId(groupId);
         groupViewModel.getGroup().observe(getViewLifecycleOwner(),
-                new Observer<Group>() {
+                new Observer<GroupDetail>() {
                     @Override
-                    public void onChanged(Group group) {
-                        Log.d(TAG, "onChanged: " + group);
+                    public void onChanged(GroupDetail groupDetail) {
+                        Log.d(TAG, "onChanged: " + groupDetail);
                     }
                 }
         );

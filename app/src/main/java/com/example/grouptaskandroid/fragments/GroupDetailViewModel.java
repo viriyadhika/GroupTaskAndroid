@@ -6,11 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.grouptaskandroid.data.GroupRepository;
-import com.example.grouptaskandroid.model.Group;
+import com.example.grouptaskandroid.data.GroupDetailRepository;
+import com.example.grouptaskandroid.model.GroupDetail;
 
 public class GroupDetailViewModel extends AndroidViewModel {
-    private GroupRepository groupRepository;
+    private GroupDetailRepository groupDetailRepository;
     private int groupId;
 
     public GroupDetailViewModel(@NonNull Application application) {
@@ -19,11 +19,11 @@ public class GroupDetailViewModel extends AndroidViewModel {
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
-        groupRepository = new GroupRepository(getApplication(), groupId);
+        groupDetailRepository = new GroupDetailRepository(getApplication(), groupId);
     }
 
-    public MutableLiveData<Group> getGroup() {
-        return groupRepository.getData();
+    public MutableLiveData<GroupDetail> getGroup() {
+        return groupDetailRepository.getData();
     }
 
 }

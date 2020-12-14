@@ -1,7 +1,5 @@
 package com.example.grouptaskandroid.adapter;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.grouptaskandroid.R;
-import com.example.grouptaskandroid.model.GroupSummary;
+import com.example.grouptaskandroid.model.Group;
 
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
 
     public static final String TAG = "GroupRecycleViewAdapter";
 
-    List<GroupSummary> myGroups;
+    List<Group> myGroups;
     private GroupRecycleViewListener groupRecycleViewListener;
 
     public GroupRecycleViewAdapter(GroupRecycleViewListener listener) {
@@ -61,7 +59,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
         return myGroups.size();
     }
 
-    public void setMyGroups(List<GroupSummary> myGroups) {
+    public void setMyGroups(List<Group> myGroups) {
         this.myGroups = myGroups;
         notifyDataSetChanged();
     }
