@@ -286,6 +286,7 @@ public class AuthenticationManagerSingleton {
         preferenceEditor.remove(Constants.PREFS_ACCESS_TOKEN);
         preferenceEditor.remove(Constants.PREFS_REFRESH_TOKEN);
         preferenceEditor.apply();
+        updateAuthState();
     }
 
 }

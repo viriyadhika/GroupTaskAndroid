@@ -15,6 +15,22 @@ public class GroupDetail {
         this.members = members;
     }
 
+    public int getPk() {
+        return pk;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Task> getTask() {
+        return task;
+    }
+
+    public List<User> getMembers() {
+        return members;
+    }
+
     @Override
     public String toString() {
         return "GroupDetail{" +

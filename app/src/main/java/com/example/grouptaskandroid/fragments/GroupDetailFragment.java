@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.grouptaskandroid.R;
+import com.example.grouptaskandroid.adapter.TaskRecycleViewAdapter;
 import com.example.grouptaskandroid.model.GroupDetail;
 
 /**
@@ -26,7 +29,10 @@ public class GroupDetailFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private GroupDetailViewModel groupViewModel;
+    private GroupDetailViewModel groupDetailViewModel;
+    private TaskRecycleViewAdapter recycleViewAdapter;
+    private RecyclerView recyclerView;
+
     public static final String TAG = "GroupDetailFragment";
 
     // TODO: Rename and change types of parameters
@@ -68,19 +74,36 @@ public class GroupDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_group_detail, container, false);
+
+
+
+        recyclerView = v.findViewById(R.id.group_detail_recyclerView);
+        recycleViewAdapter = new TaskRecycleViewAdapter();
+        recyclerView.setAdapter(recycleViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         // Inflate the layout for this fragment
-        groupViewModel = new ViewModelProvider(requireActivity()).get(GroupDetailViewModel.class);
+        groupDetailViewModel = new ViewModelProvider(requireActivity()).get(GroupDetailViewModel.class);
         int groupId = GroupDetailFragmentArgs.fromBundle(getArguments()).getGroupId();
-        groupViewModel.setGroupId(groupId);
-        groupViewModel.getGroup().observe(getViewLifecycleOwner(),
+
+        groupDetailViewModel.setGroupId(groupId);
+        groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(),
                 new Observer<GroupDetail>() {
                     @Override
                     public void onChanged(GroupDetail groupDetail) {
-                        Log.d(TAG, "onChanged: " + groupDetail);
+                        recycleViewAdapter.setTaskList(groupDetail.getTask());
+                        Log.d(TAG, "onChanged: " + groupDetail.getName());
+
                     }
                 }
         );
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        groupDetailViewModel.refreshData();
+        super.onResume();
     }
 }

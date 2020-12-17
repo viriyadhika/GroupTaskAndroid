@@ -19,8 +19,12 @@
     <fragment
         android:id="@+id/groupDetailFragment"
         android:name="com.example.grouptaskandroid.fragments.GroupDetailFragment"
-        android:label="Group Detail"
+        android:label="{title}"
         tools:layout="@layout/fragment_group_detail">
+        <argument
+            android:name="title"
+            android:defaultValue=""
+            app:argType="string" />
         <argument
             android:name="groupId"
             android:defaultValue="0"

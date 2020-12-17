@@ -27,7 +27,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
     }
 
     public interface GroupRecycleViewListener {
-        void getGroupDetail(int pk);
+        void getGroupDetail(Group group);
     }
 
     @NonNull
@@ -46,7 +46,7 @@ public class GroupRecycleViewAdapter extends RecyclerView.Adapter<GroupRecycleVi
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupRecycleViewListener.getGroupDetail(myGroups.get(position).getPk());
+                groupRecycleViewListener.getGroupDetail(myGroups.get(position));
             }
         });
     }

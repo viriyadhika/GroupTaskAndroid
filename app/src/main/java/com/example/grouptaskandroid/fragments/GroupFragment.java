@@ -65,8 +65,8 @@ public class GroupFragment extends Fragment {
 
         recycleViewAdapter = new GroupRecycleViewAdapter(new GroupRecycleViewAdapter.GroupRecycleViewListener() {
             @Override
-            public void getGroupDetail(int pk) {
-                groupViewModel.setSelectedGroupPk(pk);
+            public void getGroupDetail(Group group) {
+                groupViewModel.setSelectedGroup(group);
             }
         });
         recyclerView = v.findViewById(R.id.group_recyclerView);

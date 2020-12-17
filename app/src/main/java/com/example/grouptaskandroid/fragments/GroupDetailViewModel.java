@@ -26,4 +26,12 @@ public class GroupDetailViewModel extends AndroidViewModel {
         return groupDetailRepository.getData();
     }
 
+    public MutableLiveData<Exception> getError() {
+        return groupDetailRepository.getErrorState();
+    }
+
+    public void refreshData() {
+        groupDetailRepository.refreshData();
+    }
+
 }

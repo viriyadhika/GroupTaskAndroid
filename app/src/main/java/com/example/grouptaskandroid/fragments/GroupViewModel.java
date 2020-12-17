@@ -13,9 +13,9 @@ import java.util.List;
 
 public class GroupViewModel extends AndroidViewModel {
 
-    public static final int DEFAULT_SELECTED_PK = -1;
+    public static final Group DEFAULT_SELECTED_GROUP = new Group(-1, "Sample Group");
     private MyGroupRepository myGroupRepository;
-    private MutableLiveData<Integer> selectedGroupPk = new MutableLiveData<>(DEFAULT_SELECTED_PK);
+    private MutableLiveData<Group> selectedGroup = new MutableLiveData<>(DEFAULT_SELECTED_GROUP);
 
     public GroupViewModel(@NonNull Application application) {
         super(application);
@@ -30,12 +30,12 @@ public class GroupViewModel extends AndroidViewModel {
         return myGroupRepository.getErrorState();
     }
 
-    public MutableLiveData<Integer> getSelectedGroupPk() {
-        return selectedGroupPk;
+    public MutableLiveData<Group> getSelectedGroup() {
+        return selectedGroup;
     }
 
-    public void setSelectedGroupPk(int pk) {
-        selectedGroupPk.setValue(pk);
+    public void setSelectedGroup(Group group) {
+        selectedGroup.setValue(group);
     }
 
     public void refreshData() {

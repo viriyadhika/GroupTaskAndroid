@@ -24,6 +24,7 @@ import com.example.grouptaskandroid.fragments.GroupFragmentDirections;
 import com.example.grouptaskandroid.fragments.GroupViewModel;
 import com.example.grouptaskandroid.fragments.TaskViewModel;
 import com.example.grouptaskandroid.login.LoginActivity;
+import com.example.grouptaskandroid.model.Group;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,35 +46,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.main_nav_host_fragment);
-        navController = navHostFragment.getNavController();
-        BottomNavigationView bottomNav = findViewById(R.id.main_bottom_nav);
-        NavigationUI.setupWithNavController(bottomNav, navController);
-
-        toolbar = findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-        appBarConfiguration = new AppBarConfiguration.Builder(R.id.groupFragment, R.id.taskFragment).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        setupNavigationController();
+        setupToolBar();
 
         mainViewModel = new ViewModelProvider(MainActivity.this).get(MainViewModel.class);
         groupViewModel = new ViewModelProvider(MainActivity.this).get(GroupViewModel.class);
         taskViewModel = new ViewModelProvider(MainActivity.this).get(TaskViewModel.class);
 
-        groupViewModel.getSelectedGroupPk().observe(MainActivity.this,
-                new Observer<Integer>() {
+        groupViewModel.getSelectedGroup().observe(MainActivity.this,
+                new Observer<Group>() {
                     @Override
-                    public void onChanged(Integer pk) {
-                        if (pk != GroupViewModel.DEFAULT_SELECTED_PK) {
+                    public void onChanged(Group group) {
+                        if (!group.equals(GroupViewModel.DEFAULT_SELECTED_GROUP)) {
 
                             GroupFragmentDirections.ActionGroupFragmentToGroupDetailFragment action
                                     = GroupFragmentDirections.actionGroupFragmentToGroupDetailFragment();
-                            action.setGroupId(pk);
+                            action.setGroupId(group.getPk());
+                            action.setTitle(group.getName());
                             navController.navigate(action);
 
-                            Log.d(TAG, "onChanged: " + pk);
+                            Log.d(TAG, "onChanged: " + group);
                         }
                     }
                 });
+
         groupViewModel.getError().observe(MainActivity.this,
                 new Observer<Exception>() {
                     @Override
@@ -91,9 +87,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
 
+    private void setupToolBar() {
+        toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        appBarConfiguration = new AppBarConfiguration.Builder(R.id.groupFragment, R.id.taskFragment).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+    }
 
-
+    private void setupNavigationController() {
+        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.main_nav_host_fragment);
+        navController = navHostFragment.getNavController();
+        BottomNavigationView bottomNav = findViewById(R.id.main_bottom_nav);
+        NavigationUI.setupWithNavController(bottomNav, navController);
     }
 
     @Override
