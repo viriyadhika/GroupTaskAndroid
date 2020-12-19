@@ -41,6 +41,18 @@ public class Task {
         return group;
     }
 
+    public User getInCharge() {
+        return inCharge;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
     @Override
     public String toString() {
         return "Task{" +

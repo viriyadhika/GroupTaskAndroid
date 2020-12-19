@@ -27,7 +27,12 @@ public class TaskRecycleViewAdapter extends RecyclerView.Adapter<TaskRecycleView
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.titleText.setText(taskList.get(position).getName());
+        Task task = taskList.get(position);
+        holder.titleText.setText(task.getName());
+        holder.descText.setText(task.getDesc());
+        holder.groupNameText.setText(task.getGroup().getName());
+        holder.inChargeText.setText(task.getInCharge().getUsername());
+        holder.dueDateText.setText(task.getDueDate());
     }
 
     @Override
@@ -46,10 +51,18 @@ public class TaskRecycleViewAdapter extends RecyclerView.Adapter<TaskRecycleView
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         protected TextView titleText;
+        protected TextView descText;
+        protected TextView groupNameText;
+        protected TextView inChargeText;
+        protected TextView dueDateText;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             titleText = itemView.findViewById(R.id.task_row_title);
+            descText = itemView.findViewById(R.id.task_row_desc);
+            groupNameText = itemView.findViewById(R.id.task_row_group);
+            inChargeText = itemView.findViewById(R.id.task_row_inCharge);
+            dueDateText = itemView.findViewById(R.id.task_row_dueDate);
         }
     }
 
