@@ -108,7 +108,6 @@ public class AuthenticationManagerSingleton {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         String body = "";
-                        //TODO: Username is wrong
                         if (error.networkResponse.statusCode == 401) {
                             handleLoginError(error);
                         }

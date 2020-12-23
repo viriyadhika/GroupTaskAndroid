@@ -12,10 +12,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 
 import com.example.grouptaskandroid.R;
 import com.example.grouptaskandroid.adapter.TaskRecycleViewAdapter;
+import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.GroupDetail;
+import com.example.grouptaskandroid.model.User;
+import com.example.grouptaskandroid.util.Constants;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +39,9 @@ public class GroupDetailFragment extends Fragment {
     private GroupDetailViewModel groupDetailViewModel;
     private TaskRecycleViewAdapter recycleViewAdapter;
     private RecyclerView recyclerView;
+    private FloatingActionButton fab;
+
+    private Spinner inChargeSpinner;
 
     public static final String TAG = "GroupDetailFragment";
 
@@ -76,6 +86,8 @@ public class GroupDetailFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_group_detail, container, false);
 
 
+        fab = v.findViewById(R.id.group_detail_fab);
+
 
         recyclerView = v.findViewById(R.id.group_detail_recyclerView);
         recycleViewAdapter = new TaskRecycleViewAdapter();
@@ -84,19 +96,41 @@ public class GroupDetailFragment extends Fragment {
 
         // Inflate the layout for this fragment
         groupDetailViewModel = new ViewModelProvider(requireActivity()).get(GroupDetailViewModel.class);
-        int groupId = GroupDetailFragmentArgs.fromBundle(getArguments()).getGroupId();
+        //TODO: get the entire group data instead of only pk. Also consider to just pass empty group with only pk filled
+        final int groupId = GroupDetailFragmentArgs.fromBundle(getArguments()).getGroupId();
+        String title = GroupDetailFragmentArgs.fromBundle(getArguments()).getTitle();
+        groupDetailViewModel.setGroup(new Group(groupId, title));
 
-        groupDetailViewModel.setGroupId(groupId);
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(),
                 new Observer<GroupDetail>() {
                     @Override
-                    public void onChanged(GroupDetail groupDetail) {
+                    public void onChanged(final GroupDetail groupDetail) {
                         recycleViewAdapter.setTaskList(groupDetail.getTask());
-                        Log.d(TAG, "onChanged: " + groupDetail.getName());
+                        fab.setOnClickListener(
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        AddTaskDialogFragment addTaskDialogFragment = new AddTaskDialogFragment();
+                                        Bundle args = new Bundle();
 
+                                        ArrayList<User> membersList = new ArrayList<>(groupDetail.getMembers());
+                                        args.putSerializable(Constants.BUNDLE_ADDTASKDIALOG_MEMBERS, membersList);
+                                        args.putInt(Constants.BUNDLE_ADDTASKDIALOG_GROUPID, groupId);
+
+                                        addTaskDialogFragment.setArguments(args);
+
+                                        addTaskDialogFragment.show(
+                                                requireActivity().getSupportFragmentManager(),
+                                                "AddNewTask"
+                                        );
+                                    }
+                                }
+                        );
+                        Log.d(TAG, "onChanged: " + groupDetail.getName());
                     }
                 }
         );
+
 
         return v;
     }

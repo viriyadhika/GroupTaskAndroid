@@ -24,11 +24,11 @@ import java.util.Map;
 public class GroupDetailRepository extends GenericRepository<GroupDetail> {
 
     private static final String TAG = "GroupDetailRepository";
-    private int groupId;
+    private Group group;
 
-    public GroupDetailRepository(Context context, int groupId) {
+    public GroupDetailRepository(Context context, Group group) {
         super(context);
-        this.groupId = groupId;
+        this.group = group;
         refreshData();
     }
 
@@ -41,7 +41,7 @@ public class GroupDetailRepository extends GenericRepository<GroupDetail> {
 
     @Override
     public void retrieveData(final boolean isRetry) {
-        String url = Constants.url + "/groups/" + groupId;
+        String url = Constants.url + "/groups/" + group.getPk();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,

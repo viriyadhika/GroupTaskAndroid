@@ -9,4 +9,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logout">Log Out</string>
+    <string name="add_task_title">Add Task</string>
+    <string name="add_task_name">Name</string>
+    <string name="add_task_desc">Description</string>
+    <string name="add_task_inCharge">In Charge</string>
+    <string name="add_task_dueDate">Due Date</string>
 </resources>
