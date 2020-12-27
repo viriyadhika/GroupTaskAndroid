@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,9 +16,11 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.grouptaskandroid.R;
+import com.example.grouptaskandroid.exception.AuthenticationFailedException;
 import com.example.grouptaskandroid.model.User;
 import com.example.grouptaskandroid.util.Constants;
 import com.example.grouptaskandroid.util.DateTimeHandler;
@@ -27,7 +28,7 @@ import com.example.grouptaskandroid.util.DateTimeHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddTaskDialogFragment extends DialogFragment implements AddTaskDialogViewModel.AddTaskDialogListener {
+public class AddTaskDialogFragment extends DialogFragment implements GroupDetailViewModel.AddTaskDialogListener {
 
     public static final String TAG = "AddTaskDialogFragment";
 
@@ -48,7 +49,7 @@ public class AddTaskDialogFragment extends DialogFragment implements AddTaskDial
         view = inflater.inflate(R.layout.dialog_add_task, null);
         builder.setView(view);
 
-        final AddTaskDialogViewModel viewModel = new ViewModelProvider(requireActivity()).get(AddTaskDialogViewModel.class);
+        final GroupDetailViewModel viewModel = new ViewModelProvider(requireActivity()).get(GroupDetailViewModel.class);
         viewModel.setAddTaskDialogListener(this);
 
         name = view.findViewById(R.id.add_task_name);
@@ -124,4 +125,5 @@ public class AddTaskDialogFragment extends DialogFragment implements AddTaskDial
     public void onDateFormatError() {
         dueDate.setError("Date format is invalid");
     }
+
 }

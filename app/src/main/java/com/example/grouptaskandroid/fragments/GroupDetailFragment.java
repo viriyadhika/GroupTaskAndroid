@@ -96,7 +96,6 @@ public class GroupDetailFragment extends Fragment {
 
         // Inflate the layout for this fragment
         groupDetailViewModel = new ViewModelProvider(requireActivity()).get(GroupDetailViewModel.class);
-        //TODO: get the entire group data instead of only pk. Also consider to just pass empty group with only pk filled
         final int groupId = GroupDetailFragmentArgs.fromBundle(getArguments()).getGroupId();
         String title = GroupDetailFragmentArgs.fromBundle(getArguments()).getTitle();
         groupDetailViewModel.setGroup(new Group(groupId, title));

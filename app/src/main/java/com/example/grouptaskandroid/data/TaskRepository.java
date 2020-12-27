@@ -57,6 +57,7 @@ public class TaskRepository extends PostRepository<Task> {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, "onResponse: " + response);
+                        listener.onPostSuccess();
                     }
                 },
                 new Response.ErrorListener() {
