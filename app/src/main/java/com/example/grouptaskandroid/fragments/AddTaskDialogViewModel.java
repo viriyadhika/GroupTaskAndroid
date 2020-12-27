@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.example.grouptaskandroid.data.GroupDetailRepository;
 import com.example.grouptaskandroid.data.MyTaskRepository;
+import com.example.grouptaskandroid.data.TaskRepository;
 import com.example.grouptaskandroid.model.Task;
 import com.example.grouptaskandroid.model.User;
 import com.example.grouptaskandroid.util.DateTimeHandler;
@@ -23,11 +24,11 @@ public class AddTaskDialogViewModel extends AndroidViewModel {
 
     private Map<String, User> usernameToPkMap = new HashMap<>();
     private AddTaskDialogListener listener;
-    private MyTaskRepository repository;
+    private TaskRepository repository;
 
     public AddTaskDialogViewModel(@NonNull Application application) {
         super(application);
-        repository = new MyTaskRepository(application);
+        repository = new TaskRepository(application);
     }
 
     public interface AddTaskDialogListener {
@@ -63,7 +64,6 @@ public class AddTaskDialogViewModel extends AndroidViewModel {
                     user.getPk(),
                     dueDate
             );
-            Log.d(TAG, "saveTask: " + "saving...");
         } else {
             listener.onDateFormatError();
         }

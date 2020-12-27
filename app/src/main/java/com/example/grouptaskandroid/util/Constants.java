@@ -12,4 +12,6 @@ public class Constants {
     public static final String BUNDLE_ADDTASKDIALOG_GROUPID = "BUNDLE_ADDTASKDIALOG_GROUPID";
     public static final String BUNDLE_ADDTASKDIALOG_GROUPNAME = "BUNDLE_ADDTASKDIALOG_GROUPNAME";
 
+    public static final int RESPONSE_NOT_AUTHENTICATED = 401;
+
 }

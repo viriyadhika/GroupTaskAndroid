@@ -8,6 +8,10 @@ public class User implements Serializable {
     String username;
     String email;
 
+    public User(int pk) {
+        this.pk = pk;
+    }
+
     public User(int pk, String username, String email) {
         this.pk = pk;
         this.username = username;

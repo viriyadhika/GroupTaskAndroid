@@ -6,6 +6,10 @@ public class Group {
     public int pk;
     public String name;
 
+    public Group(int pk) {
+        this.pk = pk;
+    }
+
     public Group(int pk, String name) {
         this.pk = pk;
         this.name = name;

@@ -1,4 +1,4 @@
-package com.example.grouptaskandroid.data;
+package com.example.grouptaskandroid.data.generics;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,11 +9,12 @@ import com.android.volley.VolleyError;
 import com.example.grouptaskandroid.exception.AuthenticationFailedException;
 import com.example.grouptaskandroid.exception.NoNetworkResponseException;
 import com.example.grouptaskandroid.util.AuthenticationManagerSingleton;
+import com.example.grouptaskandroid.util.Constants;
 import com.example.grouptaskandroid.util.RequestQueueSingleton;
 
 import java.nio.charset.StandardCharsets;
 
-public abstract class GenericRepository<T> implements IGenericRepository{
+public abstract class Repository<T> implements IGenericRepository {
     protected Context context;
     protected AuthenticationManagerSingleton authenticationManagerSingleton;
     protected RequestQueueSingleton requestQueueSingleton;
@@ -22,7 +23,7 @@ public abstract class GenericRepository<T> implements IGenericRepository{
 
     protected MutableLiveData<Exception> errorState = new MutableLiveData<>();
 
-    public GenericRepository(Context context) {
+    public Repository(Context context) {
         this.context = context;
 
         authenticationManagerSingleton = AuthenticationManagerSingleton.getInstance(context);
@@ -41,22 +42,24 @@ public abstract class GenericRepository<T> implements IGenericRepository{
         Log.d(TAG, "onErrorResponse: " + error);
         if (error.networkResponse != null) {
             Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data, StandardCharsets.UTF_8));
-            if (error.networkResponse.statusCode == 401) {
-                authenticationManagerSingleton.refreshToken(
-                        new AuthenticationManagerSingleton.RefreshCallback() {
-                            @Override
-                            public void refreshSuccessCallBack() {
-                                if (!isRetry) {
-                                    retrieveData(true);
+            if (error.networkResponse.statusCode == Constants.RESPONSE_NOT_AUTHENTICATED) {
+                if (!isRetry) {
+                    authenticationManagerSingleton.refreshToken(
+                            new AuthenticationManagerSingleton.RefreshCallback() {
+                                @Override
+                                public void refreshSuccessCallBack() {
+                                    callAPI(true);
+                                }
+
+                                @Override
+                                public void refreshFailCallBack() {
+                                    errorState.setValue(new AuthenticationFailedException(error));
                                 }
                             }
-
-                            @Override
-                            public void refreshFailCallBack() {
-                                errorState.setValue(new AuthenticationFailedException(error));
-                            }
-                        }
-                );
+                    );
+                } else {
+                    errorState.setValue(new AuthenticationFailedException(error));
+                }
             }
         } else {
             errorState.setValue(new NoNetworkResponseException(error));

@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.grouptaskandroid.data.generics.Repository;
 import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.GroupDetail;
 import com.example.grouptaskandroid.model.Task;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GroupDetailRepository extends GenericRepository<GroupDetail> {
+public class GroupDetailRepository extends Repository<GroupDetail> {
 
     private static final String TAG = "GroupDetailRepository";
     private Group group;
@@ -35,12 +36,12 @@ public class GroupDetailRepository extends GenericRepository<GroupDetail> {
     @Override
     public void refreshData() {
         if (authenticationManagerSingleton.getIsLoggedIn().getValue()) {
-            retrieveData(false);
+            callAPI(false);
         }
     }
 
     @Override
-    public void retrieveData(final boolean isRetry) {
+    public void callAPI(final boolean isRetry) {
         String url = Constants.url + "/groups/" + group.getPk();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(

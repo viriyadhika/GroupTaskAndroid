@@ -9,6 +9,22 @@ public class Task {
     private String dueDate;
     private boolean isDone;
 
+    public Task(
+            String name,
+            String desc,
+            Group group,
+            User user,
+            String dueDate,
+            boolean isDone
+    ) {
+        this.name = name;
+        this.desc = desc;
+        this.group = group;
+        this.inCharge = user;
+        this.dueDate = dueDate;
+        this.isDone = isDone;
+    }
+
     public Task(int pk,
                 String name,
                 String desc,
