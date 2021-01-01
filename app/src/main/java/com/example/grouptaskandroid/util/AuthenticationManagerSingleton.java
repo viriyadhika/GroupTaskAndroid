@@ -22,6 +22,11 @@ import java.util.Map;
 public class AuthenticationManagerSingleton {
 
     public static final String TAG = "util.AuthenticationManagerSingleton";
+    public static final String PREFS = "com.example.grouptaskandroid";
+    public static final String PREFS_ACCESS_TOKEN = "prefs_access_token";
+    public static final String PREFS_REFRESH_TOKEN = "prefs_refresh_token";
+    public static final String PREFS_USERID = "prefs_userid";
+
     private static final String REFRESH = "refresh";
     private static final String ACCESS = "access";
 
@@ -39,7 +44,7 @@ public class AuthenticationManagerSingleton {
 
     private AuthenticationManagerSingleton(Context context) {
         this.context = context;
-        preferences = context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        preferences = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         updateAuthState();
     }
 
@@ -195,9 +200,9 @@ public class AuthenticationManagerSingleton {
 
     private void saveCredential(Map<String, String> jwtToken, int id) {
         SharedPreferences.Editor preferenceEditor = preferences.edit();
-        preferenceEditor.putInt(Constants.PREFS_USERID, id);
-        preferenceEditor.putString(Constants.PREFS_ACCESS_TOKEN, jwtToken.get(ACCESS));
-        preferenceEditor.putString(Constants.PREFS_REFRESH_TOKEN, jwtToken.get(REFRESH));
+        preferenceEditor.putInt(PREFS_USERID, id);
+        preferenceEditor.putString(PREFS_ACCESS_TOKEN, jwtToken.get(ACCESS));
+        preferenceEditor.putString(PREFS_REFRESH_TOKEN, jwtToken.get(REFRESH));
         preferenceEditor.apply();
     }
 
@@ -205,7 +210,7 @@ public class AuthenticationManagerSingleton {
         SharedPreferences.Editor preferenceEditor = preferences.edit();
         try {
             String accessToken = jwtToken.getString(ACCESS);
-            preferenceEditor.putString(Constants.PREFS_ACCESS_TOKEN, accessToken);
+            preferenceEditor.putString(PREFS_ACCESS_TOKEN, accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -217,15 +222,15 @@ public class AuthenticationManagerSingleton {
 
         if (hasCredentials()) {
             Map<String, String> credentials = new HashMap<>();
-            credentials.put("Authorization", "Bearer " + preferences.getString(Constants.PREFS_ACCESS_TOKEN, "empty!"));
+            credentials.put("Authorization", "Bearer " + preferences.getString(PREFS_ACCESS_TOKEN, "empty!"));
             this.credential = credentials;
-            this.userId = preferences.getInt(Constants.PREFS_USERID, -1);
+            this.userId = preferences.getInt(PREFS_USERID, -1);
         }
     }
 
     //TODO: to implement proper credential checking
     private boolean hasCredentials() {
-        return preferences.contains(Constants.PREFS_ACCESS_TOKEN);
+        return preferences.contains(PREFS_ACCESS_TOKEN);
     }
 
     public void handleLoginError(Exception e) {
@@ -243,7 +248,7 @@ public class AuthenticationManagerSingleton {
         final JSONObject access = new JSONObject();
 
         try {
-            access.put("refresh", preferences.getString(Constants.PREFS_REFRESH_TOKEN, "empty!"));
+            access.put("refresh", preferences.getString(PREFS_REFRESH_TOKEN, "empty!"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -281,9 +286,9 @@ public class AuthenticationManagerSingleton {
 
     public void handleLogOut() {
         SharedPreferences.Editor preferenceEditor = preferences.edit();
-        preferenceEditor.remove(Constants.PREFS_USERID);
-        preferenceEditor.remove(Constants.PREFS_ACCESS_TOKEN);
-        preferenceEditor.remove(Constants.PREFS_REFRESH_TOKEN);
+        preferenceEditor.remove(PREFS_USERID);
+        preferenceEditor.remove(PREFS_ACCESS_TOKEN);
+        preferenceEditor.remove(PREFS_REFRESH_TOKEN);
         preferenceEditor.apply();
         updateAuthState();
     }

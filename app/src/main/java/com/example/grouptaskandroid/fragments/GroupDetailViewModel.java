@@ -6,8 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.grouptaskandroid.data.AddMemberRepository;
 import com.example.grouptaskandroid.data.GroupDetailRepository;
 import com.example.grouptaskandroid.data.TaskRepository;
+import com.example.grouptaskandroid.data.ConvertUsernameToIdRepository;
 import com.example.grouptaskandroid.data.generics.PostRepository;
 import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.GroupDetail;
@@ -26,16 +28,20 @@ public class GroupDetailViewModel extends AndroidViewModel {
     private Map<String, User> usernameToPkMap = new HashMap<>();
     private AddTaskDialogListener listener;
     private TaskRepository taskRepository;
+    private AddMemberRepository addMemberRepository;
+    private ConvertUsernameToIdRepository convertUsernameToIdRepository;
 
     public GroupDetailViewModel(@NonNull Application application) {
         super(application);
-        taskRepository = new TaskRepository(getApplication());
+        taskRepository = new TaskRepository(application);
         taskRepository.setPostRepositoryListener(new PostRepository.PostRepositoryListener() {
             @Override
             public void onPostSuccess() {
                 groupDetailRepository.refreshData();
             }
         });
+        addMemberRepository = new AddMemberRepository(application);
+        convertUsernameToIdRepository = new ConvertUsernameToIdRepository(getApplication());
     }
 
     public void setGroup(Group group) {
@@ -98,4 +104,32 @@ public class GroupDetailViewModel extends AndroidViewModel {
         }
     }
 
+    public void addPersonToGroup(String username) {
+        findUsernameThenAddToGroup(username);
+    }
+
+    private void findUsernameThenAddToGroup(String username) {
+        convertUsernameToIdRepository.setUsername(username);
+        convertUsernameToIdRepository.setListener(new ConvertUsernameToIdRepository.ConvertUsernameToIdRepositoryListener() {
+            @Override
+            public void onResultDone(User user) {
+                addPersonToGroup(user);
+            }
+        });
+        convertUsernameToIdRepository.refreshData();
+    }
+
+    public MutableLiveData<Exception> getErrorAddMemberToGroup() {
+        return convertUsernameToIdRepository.getErrorState();
+    }
+
+    private void addPersonToGroup(User user) {
+        addMemberRepository.setListener(new AddMemberRepository.AddMemberRepositoryListener() {
+            @Override
+            public void onResultDone() {
+                groupDetailRepository.refreshData();
+            }
+        });
+        addMemberRepository.addMember(group, user);
+    }
 }

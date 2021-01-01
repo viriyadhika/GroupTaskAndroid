@@ -14,4 +14,5 @@
     <string name="add_task_desc">Description</string>
     <string name="add_task_inCharge">In Charge</string>
     <string name="add_task_dueDate">Due Date</string>
+    <string name="group_detail_members">View Members</string>
 </resources>

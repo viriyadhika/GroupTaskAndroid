@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.grouptaskandroid.R;
@@ -19,7 +20,6 @@ import com.example.grouptaskandroid.adapter.TaskRecycleViewAdapter;
 import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.GroupDetail;
 import com.example.grouptaskandroid.model.User;
-import com.example.grouptaskandroid.util.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -39,6 +39,7 @@ public class GroupDetailFragment extends Fragment {
     private GroupDetailViewModel groupDetailViewModel;
     private TaskRecycleViewAdapter recycleViewAdapter;
     private RecyclerView recyclerView;
+    private Button memberButton;
     private FloatingActionButton fab;
 
     private Spinner inChargeSpinner;
@@ -85,9 +86,8 @@ public class GroupDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_group_detail, container, false);
 
-
+        memberButton = v.findViewById(R.id.group_detail_memberButton);
         fab = v.findViewById(R.id.group_detail_fab);
-
 
         recyclerView = v.findViewById(R.id.group_detail_recyclerView);
         recycleViewAdapter = new TaskRecycleViewAdapter();
@@ -100,6 +100,7 @@ public class GroupDetailFragment extends Fragment {
         String title = GroupDetailFragmentArgs.fromBundle(getArguments()).getTitle();
         groupDetailViewModel.setGroup(new Group(groupId, title));
 
+        //I do this to ensure that GroupViewModel is filled with data before the button can be pressed
         groupDetailViewModel.getGroup().observe(getViewLifecycleOwner(),
                 new Observer<GroupDetail>() {
                     @Override
@@ -113,8 +114,8 @@ public class GroupDetailFragment extends Fragment {
                                         Bundle args = new Bundle();
 
                                         ArrayList<User> membersList = new ArrayList<>(groupDetail.getMembers());
-                                        args.putSerializable(Constants.BUNDLE_ADDTASKDIALOG_MEMBERS, membersList);
-                                        args.putInt(Constants.BUNDLE_ADDTASKDIALOG_GROUPID, groupId);
+                                        args.putSerializable(AddTaskDialogFragment.BUNDLE_ADDTASKDIALOG_MEMBERS, membersList);
+                                        args.putInt(AddTaskDialogFragment.BUNDLE_ADDTASKDIALOG_GROUPID, groupId);
 
                                         addTaskDialogFragment.setArguments(args);
 
@@ -125,7 +126,17 @@ public class GroupDetailFragment extends Fragment {
                                     }
                                 }
                         );
-                        Log.d(TAG, "onChanged: " + groupDetail.getName());
+                        memberButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                MemberListDialogFragment memberListDialogFragment = new MemberListDialogFragment();
+
+                                memberListDialogFragment.show(
+                                        requireActivity().getSupportFragmentManager(),
+                                        "MemberList"
+                                );
+                            }
+                        });
                     }
                 }
         );

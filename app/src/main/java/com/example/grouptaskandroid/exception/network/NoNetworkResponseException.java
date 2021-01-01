@@ -1,4 +1,4 @@
-package com.example.grouptaskandroid.exception;
+package com.example.grouptaskandroid.exception.network;
 
 import com.android.volley.VolleyError;
 

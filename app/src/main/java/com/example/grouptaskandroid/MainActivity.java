@@ -18,8 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.grouptaskandroid.exception.AuthenticationFailedException;
-import com.example.grouptaskandroid.exception.NoNetworkResponseException;
+import com.example.grouptaskandroid.exception.network.AuthenticationFailedException;
+import com.example.grouptaskandroid.exception.network.NoNetworkResponseException;
 import com.example.grouptaskandroid.fragments.GroupFragmentDirections;
 import com.example.grouptaskandroid.fragments.GroupViewModel;
 import com.example.grouptaskandroid.fragments.TaskViewModel;

@@ -3,26 +3,20 @@ package com.example.grouptaskandroid.data;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.lifecycle.MutableLiveData;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.grouptaskandroid.data.generics.PostRepository;
-import com.example.grouptaskandroid.exception.AuthenticationFailedException;
 import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.Task;
 import com.example.grouptaskandroid.model.User;
-import com.example.grouptaskandroid.util.AuthenticationManagerSingleton;
 import com.example.grouptaskandroid.util.Constants;
-import com.example.grouptaskandroid.util.RequestQueueSingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class TaskRepository extends PostRepository<Task> {

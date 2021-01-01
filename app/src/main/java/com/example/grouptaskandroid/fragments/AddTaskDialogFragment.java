@@ -16,13 +16,10 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.grouptaskandroid.R;
-import com.example.grouptaskandroid.exception.AuthenticationFailedException;
 import com.example.grouptaskandroid.model.User;
-import com.example.grouptaskandroid.util.Constants;
 import com.example.grouptaskandroid.util.DateTimeHandler;
 
 import java.util.ArrayList;
@@ -31,6 +28,8 @@ import java.util.List;
 public class AddTaskDialogFragment extends DialogFragment implements GroupDetailViewModel.AddTaskDialogListener {
 
     public static final String TAG = "AddTaskDialogFragment";
+    public static final String BUNDLE_ADDTASKDIALOG_GROUPID = "BUNDLE_ADDTASKDIALOG_GROUPID";
+    public static final String BUNDLE_ADDTASKDIALOG_MEMBERS = "BUNDLE_ADDTASKDIALOG_MEMBERS";
 
     private Spinner inCharge;
     private ImageButton calendarButton;
@@ -71,7 +70,7 @@ public class AddTaskDialogFragment extends DialogFragment implements GroupDetail
 
         inCharge = view.findViewById(R.id.add_task_inCharge);
         assert getArguments() != null;
-        ArrayList<User> members = (ArrayList<User>) getArguments().getSerializable(Constants.BUNDLE_ADDTASKDIALOG_MEMBERS);
+        ArrayList<User> members = (ArrayList<User>) getArguments().getSerializable(BUNDLE_ADDTASKDIALOG_MEMBERS);
         List<String> usernameList = viewModel.getMemberNames(members);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(),
                 R.layout.support_simple_spinner_dropdown_item,
@@ -96,7 +95,7 @@ public class AddTaskDialogFragment extends DialogFragment implements GroupDetail
             }
         });
 
-        final int groupId = getArguments().getInt(Constants.BUNDLE_ADDTASKDIALOG_GROUPID);
+        final int groupId = getArguments().getInt(BUNDLE_ADDTASKDIALOG_GROUPID);
         return builder
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override

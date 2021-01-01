@@ -6,8 +6,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.VolleyError;
-import com.example.grouptaskandroid.exception.AuthenticationFailedException;
-import com.example.grouptaskandroid.exception.NoNetworkResponseException;
+import com.example.grouptaskandroid.exception.network.AuthenticationFailedException;
+import com.example.grouptaskandroid.exception.network.NoNetworkResponseException;
 import com.example.grouptaskandroid.util.AuthenticationManagerSingleton;
 import com.example.grouptaskandroid.util.Constants;
 import com.example.grouptaskandroid.util.RequestQueueSingleton;
