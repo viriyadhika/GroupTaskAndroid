@@ -8,7 +8,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.grouptaskandroid.data.generics.PostRepository;
+import com.example.grouptaskandroid.data.generics.PostUpdateDeleteRepository;
 import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.Task;
 import com.example.grouptaskandroid.model.User;
@@ -19,10 +19,10 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-public class TaskRepository extends PostRepository<Task> {
-    public static final String TAG = "TaskRepository";
+public class TaskPostUpdateDeleteRepository extends PostUpdateDeleteRepository<Task> {
+    public static final String TAG = "TaskPostUpdateDeleteRepository";
 
-    public TaskRepository(Context context) {
+    public TaskPostUpdateDeleteRepository(Context context) {
         super(context);
     }
 
@@ -31,6 +31,7 @@ public class TaskRepository extends PostRepository<Task> {
         callAPI(false, task);
     }
 
+    @Override
     public void callAPI(final boolean isRetry, final Task task) {
         String url = Constants.url + "/tasks";
         JSONObject body = new JSONObject();
@@ -58,7 +59,7 @@ public class TaskRepository extends PostRepository<Task> {
                     @Override
                     public void onErrorResponse(final VolleyError error) {
                         Log.d(TAG, "onResponse: " + error);
-                        handleError(TAG, error, isRetry, task);
+                        handlePostError(TAG, error, isRetry, task);
                     }
                 }
         ) {
@@ -69,4 +70,38 @@ public class TaskRepository extends PostRepository<Task> {
         };
         requestQueueSingleton.addToRequestQueue(request);
     }
+
+    public void deleteTask(Task task) {
+        deleteTaskCallAPI(true, task);
+    }
+
+    public void deleteTaskCallAPI(boolean isRetry, Task task) {
+        String url = Constants.url + "/tasks/" + task.getPk() ;
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "onResponse: " + response);
+                        listener.onDeleteSuccess();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(final VolleyError error) {
+                        Log.d(TAG, "onErrorResponse: " + error);
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Log.d(TAG, "getHeaders: " + authenticationManagerSingleton.getCredential());
+                return authenticationManagerSingleton.getCredential();
+            }
+        };
+        requestQueueSingleton.addToRequestQueue(request);
+    }
+
 }

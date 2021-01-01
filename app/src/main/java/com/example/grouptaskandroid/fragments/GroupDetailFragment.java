@@ -19,6 +19,7 @@ import com.example.grouptaskandroid.R;
 import com.example.grouptaskandroid.adapter.TaskRecycleViewAdapter;
 import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.GroupDetail;
+import com.example.grouptaskandroid.model.Task;
 import com.example.grouptaskandroid.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -93,6 +94,12 @@ public class GroupDetailFragment extends Fragment {
         recycleViewAdapter = new TaskRecycleViewAdapter();
         recyclerView.setAdapter(recycleViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recycleViewAdapter.setListener(new TaskRecycleViewAdapter.Listener() {
+            @Override
+            public void onDeleteTask(Task task) {
+                groupDetailViewModel.deleteTask(task);
+            }
+        });
 
         // Inflate the layout for this fragment
         groupDetailViewModel = new ViewModelProvider(requireActivity()).get(GroupDetailViewModel.class);

@@ -3,6 +3,7 @@ package com.example.grouptaskandroid.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,15 @@ import java.util.List;
 public class TaskRecycleViewAdapter extends RecyclerView.Adapter<TaskRecycleViewAdapter.ViewHolder> {
 
     private List<Task> taskList;
+    private Listener listener;
+
+    public interface Listener {
+        void onDeleteTask(Task task);
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
     @NonNull
     @Override
@@ -26,13 +36,21 @@ public class TaskRecycleViewAdapter extends RecyclerView.Adapter<TaskRecycleView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Task task = taskList.get(position);
         holder.titleText.setText(task.getName());
         holder.descText.setText(task.getDesc());
         holder.groupNameText.setText(task.getGroup().getName());
         holder.inChargeText.setText(task.getInCharge().getUsername());
         holder.dueDateText.setText(task.getDueDate());
+        holder.deleteButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onDeleteTask(taskList.get(position));
+                    }
+                }
+        );
     }
 
     @Override
@@ -55,6 +73,7 @@ public class TaskRecycleViewAdapter extends RecyclerView.Adapter<TaskRecycleView
         protected TextView groupNameText;
         protected TextView inChargeText;
         protected TextView dueDateText;
+        protected ImageButton deleteButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +82,7 @@ public class TaskRecycleViewAdapter extends RecyclerView.Adapter<TaskRecycleView
             groupNameText = itemView.findViewById(R.id.task_row_group);
             inChargeText = itemView.findViewById(R.id.task_row_inCharge);
             dueDateText = itemView.findViewById(R.id.task_row_dueDate);
+            deleteButton = itemView.findViewById(R.id.task_row_deleteButton);
         }
     }
 

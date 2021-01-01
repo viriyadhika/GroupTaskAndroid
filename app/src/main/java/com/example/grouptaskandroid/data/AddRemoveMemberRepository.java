@@ -8,26 +8,24 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.grouptaskandroid.data.generics.PostRepository;
 import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.User;
 import com.example.grouptaskandroid.util.AuthenticationManagerSingleton;
 import com.example.grouptaskandroid.util.Constants;
 import com.example.grouptaskandroid.util.RequestQueueSingleton;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
 
-public class AddMemberRepository {
+public class AddRemoveMemberRepository {
 
-    public static final String TAG = "AddMemberRepository";
+    public static final String TAG = "AddRemoveMemberRepository";
     private AuthenticationManagerSingleton authenticationManager;
     private RequestQueueSingleton requestQueueSingleton;
-    private AddMemberRepositoryListener listener;
+    private Listener listener;
 
-    public AddMemberRepository(Context context) {
+    public AddRemoveMemberRepository(Context context) {
         authenticationManager = AuthenticationManagerSingleton.getInstance(context);
         requestQueueSingleton = RequestQueueSingleton.getInstance(context);
     }
@@ -36,11 +34,12 @@ public class AddMemberRepository {
         callAPI(false, group, user);
     }
 
-    public interface AddMemberRepositoryListener {
-        void onResultDone();
+    public interface Listener {
+        void onAddMemberDone();
+        void onRemoveMemberDone();
     }
 
-    public void setListener(AddMemberRepositoryListener listener) {
+    public void setListener(Listener listener) {
         this.listener = listener;
     }
 
@@ -54,7 +53,7 @@ public class AddMemberRepository {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, "onResponse: ");
-                        listener.onResultDone();
+                        listener.onAddMemberDone();
                     }
                 },
                 new Response.ErrorListener() {
@@ -71,4 +70,37 @@ public class AddMemberRepository {
         };
         requestQueueSingleton.addToRequestQueue(request);
     }
+
+    public void removeMember(Group group, User user) {
+        callAPIRemoveMember(false, group, user);
+    }
+
+    public void callAPIRemoveMember(boolean isRetry, Group group, User user) {
+        String url = Constants.url + "/groups/" + group.getPk() + "/users/" + user.getPk();
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "onResponse: ");
+                        listener.onRemoveMemberDone();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, "onErrorResponse: " + error);
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return authenticationManager.getCredential();
+            }
+        };
+        requestQueueSingleton.addToRequestQueue(request);
+    }
+
 }

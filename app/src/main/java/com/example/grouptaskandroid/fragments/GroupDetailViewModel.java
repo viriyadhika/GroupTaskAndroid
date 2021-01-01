@@ -1,18 +1,20 @@
 package com.example.grouptaskandroid.fragments;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.grouptaskandroid.data.AddMemberRepository;
+import com.example.grouptaskandroid.data.AddRemoveMemberRepository;
 import com.example.grouptaskandroid.data.GroupDetailRepository;
-import com.example.grouptaskandroid.data.TaskRepository;
+import com.example.grouptaskandroid.data.TaskPostUpdateDeleteRepository;
 import com.example.grouptaskandroid.data.ConvertUsernameToIdRepository;
-import com.example.grouptaskandroid.data.generics.PostRepository;
+import com.example.grouptaskandroid.data.generics.PostUpdateDeleteRepository;
 import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.GroupDetail;
+import com.example.grouptaskandroid.model.Task;
 import com.example.grouptaskandroid.model.User;
 import com.example.grouptaskandroid.util.DateTimeHandler;
 
@@ -22,25 +24,33 @@ import java.util.List;
 import java.util.Map;
 
 public class GroupDetailViewModel extends AndroidViewModel {
+    public static final String TAG = "GroupDetailViewModel";
+
     private GroupDetailRepository groupDetailRepository;
     private Group group;
 
     private Map<String, User> usernameToPkMap = new HashMap<>();
     private AddTaskDialogListener listener;
-    private TaskRepository taskRepository;
-    private AddMemberRepository addMemberRepository;
+    private TaskPostUpdateDeleteRepository taskPostUpdateDeleteRepository;
+    private AddRemoveMemberRepository addRemoveMemberRepository;
     private ConvertUsernameToIdRepository convertUsernameToIdRepository;
 
     public GroupDetailViewModel(@NonNull Application application) {
         super(application);
-        taskRepository = new TaskRepository(application);
-        taskRepository.setPostRepositoryListener(new PostRepository.PostRepositoryListener() {
+        taskPostUpdateDeleteRepository = new TaskPostUpdateDeleteRepository(application);
+        taskPostUpdateDeleteRepository.setListener(new PostUpdateDeleteRepository.Listener() {
             @Override
             public void onPostSuccess() {
-                groupDetailRepository.refreshData();
+                refreshData();
+            }
+
+            @Override
+            public void onDeleteSuccess() {
+                Log.d(TAG, "onDeleteSuccess: " + "delete@!");
+                refreshData();
             }
         });
-        addMemberRepository = new AddMemberRepository(application);
+        addRemoveMemberRepository = new AddRemoveMemberRepository(application);
         convertUsernameToIdRepository = new ConvertUsernameToIdRepository(getApplication());
     }
 
@@ -67,10 +77,14 @@ public class GroupDetailViewModel extends AndroidViewModel {
             usernameList.add(member.getUsername());
             usernameToPkMap.put(member.getUsername(), member);
         }
-
         return usernameList;
     }
 
+    public void deleteTask(Task task) {
+        taskPostUpdateDeleteRepository.deleteTask(task);
+    }
+
+    // Add Task Dialog
     public interface AddTaskDialogListener {
         void onDateFormatError();
     }
@@ -86,7 +100,7 @@ public class GroupDetailViewModel extends AndroidViewModel {
                          String dueDate) {
         if (DateTimeHandler.verifyDate(dueDate)) {
             User user = usernameToPkMap.get(inCharge);
-            taskRepository.createTask(
+            taskPostUpdateDeleteRepository.createTask(
                     name,
                     desc,
                     groupId,
@@ -104,6 +118,7 @@ public class GroupDetailViewModel extends AndroidViewModel {
         }
     }
 
+    // Add a person to a group
     public void addPersonToGroup(String username) {
         findUsernameThenAddToGroup(username);
     }
@@ -124,12 +139,23 @@ public class GroupDetailViewModel extends AndroidViewModel {
     }
 
     private void addPersonToGroup(User user) {
-        addMemberRepository.setListener(new AddMemberRepository.AddMemberRepositoryListener() {
+        addRemoveMemberRepository.setListener(new AddRemoveMemberRepository.Listener() {
             @Override
-            public void onResultDone() {
+            public void onAddMemberDone() {
                 groupDetailRepository.refreshData();
             }
+
+            @Override
+            public void onRemoveMemberDone() {
+                groupDetailRepository.refreshData();
+            }
+
         });
-        addMemberRepository.addMember(group, user);
+        addRemoveMemberRepository.addMember(group, user);
+    }
+
+    //Remove person from a group
+    public void removePersonFromGroup(User user) {
+        addRemoveMemberRepository.removeMember(group, user);
     }
 }

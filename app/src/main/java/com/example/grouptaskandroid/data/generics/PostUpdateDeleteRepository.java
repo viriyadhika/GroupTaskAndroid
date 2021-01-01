@@ -13,14 +13,14 @@ import com.example.grouptaskandroid.util.RequestQueueSingleton;
 
 import java.nio.charset.StandardCharsets;
 
-public abstract class PostRepository<T>  implements IGenericPostRepository<T> {
+public abstract class PostUpdateDeleteRepository<T>  implements IGenericPostRepository<T> {
     protected AuthenticationManagerSingleton authenticationManagerSingleton;
     protected RequestQueueSingleton requestQueueSingleton;
 
-    protected PostRepositoryListener listener;
+    protected Listener listener;
     protected MutableLiveData<Exception> errorState = new MutableLiveData<>();
 
-    public PostRepository(Context context) {
+    public PostUpdateDeleteRepository(Context context) {
         authenticationManagerSingleton = AuthenticationManagerSingleton.getInstance(context);
         requestQueueSingleton = RequestQueueSingleton.getInstance(context);
     }
@@ -29,15 +29,16 @@ public abstract class PostRepository<T>  implements IGenericPostRepository<T> {
         return errorState;
     }
 
-    public interface PostRepositoryListener {
+    public interface Listener {
         void onPostSuccess();
+        void onDeleteSuccess();
     }
 
-    public void setPostRepositoryListener(PostRepositoryListener listener) {
+    public void setListener(Listener listener) {
         this.listener = listener;
     }
 
-    public void handleError(String TAG, final VolleyError error, final boolean isRetry, final T data) {
+    public void handlePostError(String TAG, final VolleyError error, final boolean isRetry, final T data) {
         if (error.networkResponse != null) {
             if (error.networkResponse.statusCode == Constants.RESPONSE_NOT_AUTHENTICATED) {
                 if (!isRetry) {
@@ -59,4 +60,28 @@ public abstract class PostRepository<T>  implements IGenericPostRepository<T> {
             Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data, StandardCharsets.UTF_8));
         }
     }
+
+    public void handleDeleteError(String TAG, final VolleyError error, final boolean isRetry, final T data){
+        if (error.networkResponse != null) {
+            if (error.networkResponse.statusCode == Constants.RESPONSE_NOT_AUTHENTICATED) {
+                if (!isRetry) {
+                    authenticationManagerSingleton.refreshToken(new AuthenticationManagerSingleton.RefreshCallback() {
+                        @Override
+                        public void refreshSuccessCallBack() {
+                            callAPI(true, data);
+                        }
+
+                        @Override
+                        public void refreshFailCallBack() {
+                            errorState.setValue(new AuthenticationFailedException(error));
+                        }
+                    });
+                } else {
+                    errorState.setValue(new AuthenticationFailedException(error));
+                }
+            }
+            Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data, StandardCharsets.UTF_8));
+        }
+    }
+
 }

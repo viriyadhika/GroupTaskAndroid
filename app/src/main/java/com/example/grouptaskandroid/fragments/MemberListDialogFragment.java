@@ -24,6 +24,7 @@ import com.example.grouptaskandroid.R;
 import com.example.grouptaskandroid.adapter.MemberRecycleViewAdapter;
 import com.example.grouptaskandroid.exception.network.NotFoundException;
 import com.example.grouptaskandroid.model.GroupDetail;
+import com.example.grouptaskandroid.model.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,6 +95,13 @@ public class MemberListDialogFragment extends DialogFragment {
         RecyclerView recyclerView = v.findViewById(R.id.member_list_memberList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter.setListener(new MemberRecycleViewAdapter.Listener() {
+            @Override
+            public void onDeleteMember(User user) {
+                viewModel.removePersonFromGroup(user);
+            }
+        });
+
         viewModel.getGroup().observe(this, new Observer<GroupDetail>() {
             @Override
             public void onChanged(GroupDetail groupDetail) {
