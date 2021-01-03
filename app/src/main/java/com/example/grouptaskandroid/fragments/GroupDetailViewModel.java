@@ -46,7 +46,6 @@ public class GroupDetailViewModel extends AndroidViewModel {
 
             @Override
             public void onDeleteSuccess() {
-                Log.d(TAG, "onDeleteSuccess: " + "delete@!");
                 refreshData();
             }
         });
