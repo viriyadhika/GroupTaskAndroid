@@ -27,8 +27,11 @@ public class GroupDetailRepository extends Repository<GroupDetail> {
     private static final String TAG = "GroupDetailRepository";
     private Group group;
 
-    public GroupDetailRepository(Context context, Group group) {
+    public GroupDetailRepository(Context context) {
         super(context);
+    }
+
+    public void retrieveGroupData(Group group) {
         this.group = group;
         refreshData();
     }

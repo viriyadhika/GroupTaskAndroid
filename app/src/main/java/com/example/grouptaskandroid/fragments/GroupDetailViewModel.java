@@ -35,6 +35,27 @@ public class GroupDetailViewModel extends AndroidViewModel {
     private AddRemoveMemberRepository addRemoveMemberRepository;
     private ConvertUsernameToIdRepository convertUsernameToIdRepository;
 
+    private ErrorState errorState;
+
+    public static class ErrorState {
+        MutableLiveData<Exception> groupDetailError;
+        MutableLiveData<Exception> addRemoveMemberError;
+        public ErrorState(
+            MutableLiveData<Exception> groupDetailError,
+            MutableLiveData<Exception> addRemoveMemberError) {
+            this.groupDetailError = groupDetailError;
+            this.addRemoveMemberError = addRemoveMemberError;
+        }
+
+        public MutableLiveData<Exception> getGroupDetailError() {
+            return groupDetailError;
+        }
+
+        public MutableLiveData<Exception> getAddRemoveMemberError() {
+            return addRemoveMemberError;
+        }
+    }
+
     public GroupDetailViewModel(@NonNull Application application) {
         super(application);
         taskPostUpdateDeleteRepository = new TaskPostUpdateDeleteRepository(application);
@@ -51,19 +72,25 @@ public class GroupDetailViewModel extends AndroidViewModel {
         });
         addRemoveMemberRepository = new AddRemoveMemberRepository(application);
         convertUsernameToIdRepository = new ConvertUsernameToIdRepository(getApplication());
+        groupDetailRepository = new GroupDetailRepository(getApplication());
+        errorState = new ErrorState(
+                groupDetailRepository.getErrorState(),
+                addRemoveMemberRepository.getErrorState()
+        );
     }
 
     public void setGroup(Group group) {
         this.group = group;
-        groupDetailRepository = new GroupDetailRepository(getApplication(), group);
+        groupDetailRepository.retrieveGroupData(group);
+
     }
 
     public MutableLiveData<GroupDetail> getGroup() {
         return groupDetailRepository.getData();
     }
 
-    public MutableLiveData<Exception> getError() {
-        return groupDetailRepository.getErrorState();
+    public ErrorState getError() {
+        return errorState;
     }
 
     public void refreshData() {

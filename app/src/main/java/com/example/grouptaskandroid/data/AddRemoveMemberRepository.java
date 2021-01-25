@@ -14,6 +14,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.grouptaskandroid.exception.network.AuthenticationFailedException;
+import com.example.grouptaskandroid.exception.network.BadRequestException;
+import com.example.grouptaskandroid.exception.network.NoNetworkResponseException;
 import com.example.grouptaskandroid.model.Group;
 import com.example.grouptaskandroid.model.User;
 import com.example.grouptaskandroid.util.AuthenticationManagerSingleton;
@@ -46,6 +48,10 @@ public class AddRemoveMemberRepository {
     public interface Listener {
         void onAddMemberDone();
         void onRemoveMemberDone();
+    }
+
+    public MutableLiveData<Exception> getErrorState() {
+        return errorState;
     }
 
     public void setListener(Listener listener) {
@@ -101,27 +107,35 @@ public class AddRemoveMemberRepository {
                     public void onErrorResponse(final VolleyError error) {
                         Log.d(TAG, "onErrorResponse: " + error);
                         if (error.networkResponse != null) {
-                            if (!isRetry) {
-                                authenticationManagerSingleton.refreshToken(
-                                        new AuthenticationManagerSingleton.RefreshCallback() {
-                                            @Override
-                                            public void refreshSuccessCallBack() {
-                                                callAPIRemoveMember(true, group, user);
-                                            }
+                            if (error.networkResponse.statusCode == Constants.RESPONSE_NOT_AUTHENTICATED) {
+                                if (!isRetry) {
+                                    authenticationManagerSingleton.refreshToken(
+                                            new AuthenticationManagerSingleton.RefreshCallback() {
+                                                @Override
+                                                public void refreshSuccessCallBack() {
+                                                    callAPIRemoveMember(true, group, user);
+                                                }
 
-                                            @Override
-                                            public void refreshFailCallBack() {
-                                                errorState.setValue(new AuthenticationFailedException(error));
+                                                @Override
+                                                public void refreshFailCallBack() {
+                                                    errorState.setValue(new AuthenticationFailedException(error));
+                                                }
                                             }
-                                        }
-                                );
-                            } else {
-                                errorState.setValue(new AuthenticationFailedException(error));
+                                    );
+                                } else {
+                                    errorState.setValue(new AuthenticationFailedException(error));
+                                }
                             }
+
+                            if (error.networkResponse.statusCode == Constants.RESPONSE_BAD_REQUEST) {
+                                errorState.setValue(new BadRequestException(error));
+                            }
+                        } else {
+                            errorState.setValue(new NoNetworkResponseException(error));
                         }
                     }
                 }
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return authenticationManagerSingleton.getCredential();

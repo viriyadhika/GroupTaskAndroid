@@ -19,7 +19,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.grouptaskandroid.exception.network.AuthenticationFailedException;
+import com.example.grouptaskandroid.exception.network.BadRequestException;
 import com.example.grouptaskandroid.exception.network.NoNetworkResponseException;
+import com.example.grouptaskandroid.fragments.GroupDetailViewModel;
 import com.example.grouptaskandroid.fragments.GroupFragmentDirections;
 import com.example.grouptaskandroid.fragments.GroupViewModel;
 import com.example.grouptaskandroid.fragments.TaskViewModel;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel mainViewModel;
     private GroupViewModel groupViewModel;
     private TaskViewModel taskViewModel;
+    private GroupDetailViewModel groupDetailViewModel;
 
     private Toolbar toolbar;
 
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainViewModel = new ViewModelProvider(MainActivity.this).get(MainViewModel.class);
         groupViewModel = new ViewModelProvider(MainActivity.this).get(GroupViewModel.class);
+        groupDetailViewModel = new ViewModelProvider(MainActivity.this).get(GroupDetailViewModel.class);
         taskViewModel = new ViewModelProvider(MainActivity.this).get(TaskViewModel.class);
 
         groupViewModel.getSelectedGroup().observe(MainActivity.this,
@@ -84,6 +88,24 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onChanged(Exception exception) {
                         handleAPIException(exception);
+                    }
+                }
+        );
+
+        groupDetailViewModel.getError().getGroupDetailError().observe(MainActivity.this,
+                new Observer<Exception>() {
+                    @Override
+                    public void onChanged(Exception e) {
+                        handleAPIException(e);
+                    }
+                }
+        );
+
+        groupDetailViewModel.getError().getAddRemoveMemberError().observe(MainActivity.this,
+                new Observer<Exception>() {
+                    @Override
+                    public void onChanged(Exception e) {
+                        handleAPIException(e);
                     }
                 }
         );
@@ -141,6 +163,12 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(
                     MainActivity.this,
                     ((NoNetworkResponseException) exception).getErrorMsg(),
+                    Toast.LENGTH_LONG
+            ).show();
+        } else if (exception instanceof BadRequestException) {
+            Toast.makeText(
+                    MainActivity.this,
+                    ((BadRequestException) exception).getErrorMsg(),
                     Toast.LENGTH_LONG
             ).show();
         }
