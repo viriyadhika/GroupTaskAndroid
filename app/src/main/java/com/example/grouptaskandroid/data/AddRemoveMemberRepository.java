@@ -42,7 +42,7 @@ public class AddRemoveMemberRepository {
     }
 
     public void addMember(Group group, User user) {
-        callAPI(false, group, user);
+        callAPIAddMember(false, group, user);
     }
 
     public interface Listener {
@@ -58,9 +58,9 @@ public class AddRemoveMemberRepository {
         this.listener = listener;
     }
 
-    public void callAPI(boolean isRetry, Group group, User user) {
+    public void callAPIAddMember(final boolean isRetry, final Group group, final User user) {
         String url = Constants.url + "/groups/" + group.getPk() + "/users/" + user.getPk();
-        JsonObjectRequest request = new JsonObjectRequest(
+        final JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.PUT,
                 url,
                 null,
@@ -73,8 +73,29 @@ public class AddRemoveMemberRepository {
                 },
                 new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
+                    public void onErrorResponse(final VolleyError error) {
                         Log.d(TAG, "onErrorResponse: " + error);
+                        if (error.networkResponse != null) {
+                            if (error.networkResponse.statusCode == Constants.RESPONSE_NOT_AUTHENTICATED) {
+                                if (!isRetry) {
+                                    authenticationManagerSingleton.refreshToken(
+                                            new AuthenticationManagerSingleton.RefreshCallback() {
+                                                @Override
+                                                public void refreshSuccessCallBack() {
+                                                    callAPIAddMember(true, group, user);
+                                                }
+
+                                                @Override
+                                                public void refreshFailCallBack() {
+                                                    errorState.setValue(new AuthenticationFailedException(error));
+                                                }
+                                            }
+                                    );
+                                } else {
+                                    errorState.setValue(new AuthenticationFailedException(error));
+                                }
+                            }
+                        }
                     }
                 }
         ) {

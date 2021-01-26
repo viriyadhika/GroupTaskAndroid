@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.grouptaskandroid.exception.network.AuthenticationFailedException;
 import com.example.grouptaskandroid.exception.network.BadRequestException;
 import com.example.grouptaskandroid.exception.network.NoNetworkResponseException;
+import com.example.grouptaskandroid.exception.network.NotFoundException;
 import com.example.grouptaskandroid.fragments.GroupDetailViewModel;
 import com.example.grouptaskandroid.fragments.GroupFragmentDirections;
 import com.example.grouptaskandroid.fragments.GroupViewModel;
@@ -109,6 +110,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        groupDetailViewModel.getError().getConvertUsernameToIdError().observe(MainActivity.this,
+                new Observer<Exception>() {
+                    @Override
+                    public void onChanged(Exception e) {
+                        handleAPIException(e);
+                    }
+                }
+        );
     }
 
     private void setupToolBar() {
@@ -169,6 +179,12 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(
                     MainActivity.this,
                     ((BadRequestException) exception).getErrorMsg(),
+                    Toast.LENGTH_LONG
+            ).show();
+        } else if (exception instanceof NotFoundException) {
+            Toast.makeText(
+                    MainActivity.this,
+                    ((NotFoundException) exception).getMessage(),
                     Toast.LENGTH_LONG
             ).show();
         }

@@ -40,11 +40,14 @@ public class GroupDetailViewModel extends AndroidViewModel {
     public static class ErrorState {
         MutableLiveData<Exception> groupDetailError;
         MutableLiveData<Exception> addRemoveMemberError;
+        MutableLiveData<Exception> convertUsernameToIdError;
         public ErrorState(
             MutableLiveData<Exception> groupDetailError,
-            MutableLiveData<Exception> addRemoveMemberError) {
+            MutableLiveData<Exception> addRemoveMemberError,
+            MutableLiveData<Exception> convertUsernameToIdError) {
             this.groupDetailError = groupDetailError;
             this.addRemoveMemberError = addRemoveMemberError;
+            this.convertUsernameToIdError = convertUsernameToIdError;
         }
 
         public MutableLiveData<Exception> getGroupDetailError() {
@@ -53,6 +56,10 @@ public class GroupDetailViewModel extends AndroidViewModel {
 
         public MutableLiveData<Exception> getAddRemoveMemberError() {
             return addRemoveMemberError;
+        }
+
+        public MutableLiveData<Exception> getConvertUsernameToIdError() {
+            return convertUsernameToIdError;
         }
     }
 
@@ -75,7 +82,8 @@ public class GroupDetailViewModel extends AndroidViewModel {
         groupDetailRepository = new GroupDetailRepository(getApplication());
         errorState = new ErrorState(
                 groupDetailRepository.getErrorState(),
-                addRemoveMemberRepository.getErrorState()
+                addRemoveMemberRepository.getErrorState(),
+                convertUsernameToIdRepository.getErrorState()
         );
     }
 
