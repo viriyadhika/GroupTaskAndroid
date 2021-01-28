@@ -1,10 +1,41 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:buttonStyle">@style/ButtonStyle</item>
+    </style>
+
+    <style name="ActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.AppCompat.Button.Colored" >
+        <item name="android:background">@drawable/button_border</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="TitleText" >
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12pt</item>
+    </style>
+
+    <style name="SubTitleText" >
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">10pt</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:textSize">8pt</item>
+    </style>
+
+    <style name="FadedText">
+        <item name="android:textSize">8pt</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
     </style>
 
 </resources>

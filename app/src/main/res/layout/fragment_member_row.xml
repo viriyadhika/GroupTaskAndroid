@@ -12,6 +12,7 @@
         <TextView
             android:id="@+id/fragment_member_row_memberName"
             android:layout_width="0dp"
+            style="@style/Text"
             android:layout_weight="10"
             android:layout_height="wrap_content" />
 

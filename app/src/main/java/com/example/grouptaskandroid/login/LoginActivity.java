@@ -1,6 +1,7 @@
 package com.example.grouptaskandroid.login;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -25,6 +26,8 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar loginProgress;
     TextView loginProgressDec;
     TextView errorText;
+    TextView titleText;
+    CardView loginCard;
 
     LoginViewModel loginViewModel;
 
@@ -71,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
         loginProgress = findViewById(R.id.login_progress);
         loginProgressDec = findViewById(R.id.login_progress_desc);
         errorText = findViewById(R.id.login_error);
+        titleText = findViewById(R.id.login_title);
+        loginCard = findViewById(R.id.login_card);
     }
 
     private void showProgressBar() {
@@ -80,6 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         passwordText.setVisibility(View.INVISIBLE);
         errorText.setVisibility(View.INVISIBLE);
         loginButton.setVisibility(View.INVISIBLE);
+        titleText.setVisibility(View.INVISIBLE);
+        loginCard.setVisibility(View.INVISIBLE);
     }
 
     private void unshowProgressBar() {
@@ -89,6 +96,22 @@ public class LoginActivity extends AppCompatActivity {
         passwordText.setVisibility(View.VISIBLE);
         errorText.setVisibility(View.VISIBLE);
         loginButton.setVisibility(View.VISIBLE);
+        titleText.setVisibility(View.VISIBLE);
+        loginCard.setVisibility(View.VISIBLE);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loginViewModel.getIsLoggedIn().observe(LoginActivity.this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoggedIn) {
+                if (isLoggedIn) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
 }
