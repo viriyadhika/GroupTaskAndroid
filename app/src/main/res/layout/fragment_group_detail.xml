@@ -27,6 +27,6 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:background="@android:color/transparent"
-        android:src="@android:drawable/btn_plus"  />
+        android:src="@drawable/plus_button" />
 
 </RelativeLayout>

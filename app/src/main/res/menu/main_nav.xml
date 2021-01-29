@@ -4,12 +4,12 @@
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
         android:id="@+id/taskFragment"
-        android:icon="@drawable/ic_launcher_foreground"
-        android:title="Task" />
+        android:icon="@drawable/task_logo"
+        android:title="My Tasks" />
 
     <!-- Settings, should always be in the overflow -->
     <item android:id="@+id/groupFragment"
-        android:icon="@drawable/ic_launcher_foreground"
-        android:title="Group" />
+        android:icon="@drawable/group_logo"
+        android:title="My Groups" />
 
 </menu>
